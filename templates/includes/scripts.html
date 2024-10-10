@@ -1,0 +1,138 @@
+{% comment %} {% extends 'layouts/base.html' %}
+
+{% block title %} Dashboard {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<style>
+  .toggle-button {
+    flex-grow: 1;
+    text-align: center;
+  }
+  .toggle-button.is-active {
+    background-color: #ccc;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+    <!-- Header -->
+    <div class="header pb-6" style="background-color:#ffffff">
+      <div class="container-fluid">
+        <div class="header-body">
+          <div class="row align-items-center py-4">
+            <div class="col-lg-6 col-7">
+              <h6 class="h2 text-black d-inline-block mb-0">View User - General View</h6>
+            </div>
+          </div>
+          <!-- Card stats -->
+
+          <!-- Toggle buttons -->
+          <div class="d-flex justify-content-between mb-4">
+            <button class="btn toggle-button" data-target="#general-info" style="background-color: #1c93b6; color: white; border-color: #1c93b6;">General Information</button>
+            <button class="btn toggle-button" data-target="#user-goal-list" style="background-color: white; color: #1c93b6; border-color: #1c93b6;">User Goal List</button>
+            <button class="btn toggle-button" data-target="#subscription-plan" style="background-color: white; color: #1c93b6; border-color: #1c93b6;">Subscription Plan</button>
+            
+          </div>
+
+
+        <!-- Content -->
+<div id="general-info" class="card text-center">
+  <div class="card-body">
+    <h5 class="card-title">General Information</h5>
+    <p class="card-text">
+      Name: Aadya Srivastava<br>
+      Email Address: aadya@mailinator.com<br>
+      Mobile Number: 1234567890<br>
+      Age: 20<br>
+      Gender: Female<br>
+      Family Status: Married<br>
+      Rewards Earned: 200 Points<br>
+      Active Subscription Plan: Basic
+    </p>
+    <div class="border-bottom mb-3"></div>
+  </div>
+</div>
+
+<div id="user-goal-list" class="card text-center" style="display: none;">
+  <div class="card-body">
+    <h5 class="card-title">User Goal List</h5>
+    <p class="card-text">Content for User Goal List goes here.</p>
+    <div class="border-bottom mb-3"></div>
+  </div>
+</div>
+
+<div id="subscription-plan" class="card text-center" style="display: none;">
+  <div class="card-body">
+    <h5 class="card-title">Subscription Plan</h5>
+    <p class="card-text">Content for Subscription Plan goes here.</p>
+    <div class="border-bottom mb-3"></div>
+  </div>
+</div>
+
+<div class="text-center">
+  <button class="btn btn-primary" style="background-color: #1c93b6;border-color: #1c93b6" onclick="history.back()">Back</button>
+</div>
+
+
+        </div>
+      </div>
+    </div>
+    <!-- Page content -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        // Get the active button from localStorage
+        var activeButton = localStorage.getItem('activeButton');
+        if (activeButton) {
+          $('.toggle-button').each(function() {
+            if ($(this).data('target') === activeButton) {
+              $(this).addClass('is-active').css('background-color', '#1c93b6').css('color', 'white');
+              $($(this).data('target')).show();
+            } else {
+              $(this).removeClass('is-active').css('background-color', 'white').css('color', '#1c93b6');
+              $($(this).data('target')).hide();
+            }
+          });
+        }
+    
+        $('.toggle-button').click(function() {
+          var target = $(this).data('target');
+          $('.card').hide();
+          $(target).show();
+          $('.toggle-button').removeClass('is-active').css('background-color', 'white').css('color', '#1c93b6');
+          $(this).addClass('is-active').css('background-color', '#1c93b6').css('color', 'white');
+          
+          // Store the active button in localStorage
+          localStorage.setItem('activeButton', target);
+        });
+      });
+    </script>
+    
+    
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+
+  <script src="/static/assets/vendor/chart.js/dist/Chart.min.js"></script>
+  <script src="/static/assets/vendor/chart.js/dist/Chart.extension.js"></script>
+
+{% endblock javascripts %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+ {% endcomment %}

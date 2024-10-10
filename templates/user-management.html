@@ -1,0 +1,232 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Tables{% endblock title %}
+
+{% block content %}
+
+<div class="header pb-6 mt-4" style="background-color:#ffffff">
+  <div class="container-fluid">
+      <h2 class="mb-0">User Management</h2>
+    
+    <div class="header-body mt-5" style="box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+      <div class="row align-items-center py-4" style="display: flex; justify-content: end; padding: 6px;">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="form-group row">
+              <div class="col-lg-6">
+                  <input type="file" class="form-control" id="customFile" name="file" />
+              </div>
+              <div class="col-lg-2">
+                  <button type="submit" class="btn btn-primary">Upload</button>
+              </div>
+              <div class="col-lg-4">
+                  <a href="{% url 'Admin:add-information' %}" class="btn" style="background-color:#898989; color: #fff">Add Information</a>
+              </div>
+          </div>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Page content -->
+<div class="container-fluid mt--5">
+  <div class="row">
+    <div class="col">
+      <div class="card">
+        <!-- Card header -->
+        
+        <!-- Light table -->
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="text-center" style="background-color:#1c93b6; color:#fff">
+              <tr>
+                <th scope="col" class="sort" data-sort="name">SN</th>
+                <th scope="col" class="sort" data-sort="budget">Domain Name</th>
+                {% comment %} <th scope="col" class="sort" data-sort="status">Server IP</th>
+                <th scope="col">Associated Account</th>
+                <th scope="col" class="sort" data-sort="completion">Customer ID</th>
+                <th scope="col">Domain - Account</th>
+                <th scope="col">SSL Status</th>
+                <th scope="col">Hosted Account</th>
+                <th scope="col">Remark</th> {% endcomment %}
+                <th scope="col">Expires</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            
+            <tbody class="list text-center">
+              {% for i in notify_obj %}
+                <tr class="{% if i.expires <= today %}expired{% endif %}" onclick="window.location.href='{% url 'Admin:edit-notify' i.id %}'" style="cursor: pointer;">
+                  <th scope="row">
+                    <div class="media align-items-center">
+                      <div class="media-body">
+                        <span class="name mb-0 text-sm">{{ forloop.counter }}</span>
+                      </div>
+                    </div>
+                  </th>
+                  <td class="budget">
+                    {{ i.domain_name }}
+                  </td>
+                  {% comment %} 
+                  <!-- Other commented-out columns -->
+                  {% endcomment %}
+                  <td>
+                    {{ i.expires }}
+                  </td>
+                  <td>
+                    <div class="align-items-center">
+                      <a href="{% url 'Admin:edit-notify' i.id %}" class="btn btn-sm btn-success">Edit</a>
+                      <button class="btn btn-sm btn-success" onclick="showDeleteUserConfirmation('{{ i.id }}')">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+            
+          </table>
+        </div>
+        <!-- Card footer -->
+        <div class="card-footer py-4">
+          <nav aria-label="...">
+            <ul class="pagination justify-content-end mb-0">
+              {% if user_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?page=1{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}">
+                    <i class="fas fa-angle-double-left"></i>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ user_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}">
+                    <i class="fas fa-angle-left"></i>
+                  </a>
+                </li>
+              {% endif %}
+        
+              {% for page_number in user_obj.paginator.page_range %}
+                <li class="page-item {% if user_obj.number == page_number %}active{% endif %}">
+                  <a class="page-link" href="?page={{ page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}">
+                    {{ page_number }}
+                  </a>
+                </li>
+              {% endfor %}
+        
+              {% if user_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ user_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}">
+                    <i class="fas fa-angle-right"></i>
+                  </a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?page={{ user_obj.paginator.num_pages }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.from_date %}&from_date={{ request.GET.from_date }}{% endif %}{% if request.GET.to_date %}&to_date={{ request.GET.to_date }}{% endif %}">
+                    <i class="fas fa-angle-double-right"></i>
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showDeleteUserConfirmation(userId) {
+      Swal.fire({
+          text: 'Are you sure you want to delete this user?',
+          iconHtml: '<div class="icon-shape bg-danger text-gray rounded-circle shadow-none fa-xs" style="padding: 10px;"><i class="fas fa-trash"></i></div>',
+          showCancelButton: true,
+          showCloseButton: true,
+          confirmButtonText: 'Yes',
+          cancelButtonText: 'No',
+          customClass: {
+              icon: 'material-icons-outlined',
+          },
+      }).then((result) => {
+          if (result.isConfirmed) {
+              
+              window.location.href = `/delete-user/${userId}/`; 
+          }
+      });
+  }
+
+  // Function to convert a table to CSV format
+  function convertTableToCSV(table) {
+    const rows = Array.from(table.getElementsByTagName('tr'));
+    const headers = Array.from(rows[0].getElementsByTagName('th'));
+
+    return rows.map(row => {
+      const columns = Array.from(row.getElementsByTagName('td'));
+      return headers
+        .filter(header => header.textContent.trim() !== 'Action') // Exclude Action column
+        .concat(columns)
+        .map(column => column.textContent.trim().replace(/View|Edit|Delete|Action/g, '')) // Trim and replace specified values
+        .join(',');
+    }).join('\n');
+  }
+
+  // Function to trigger the CSV download
+  function downloadCSV(csvContent, fileName) {
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+  }
+
+  // Add click event listener to the download button
+  document.getElementById('download-btn').addEventListener('click', function () {
+    const table = document.querySelector('.table-responsive table');
+    const csvContent = convertTableToCSV(table);
+    const fileName = 'table_data.csv';
+    downloadCSV(csvContent, fileName);
+  });
+</script>
+
+<style>
+  .expired {
+    background-color: red;
+    color: white;  /* Optional: To make text readable */
+  }
+
+  .btn-success {
+    color: #fff;
+    background-color: #1c93b6;
+    border-color: #1c93b6;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+  }
+
+  .btn-outline-success {
+    color: #1C93B6;
+    background-color: transparent;
+    background-image: none;
+    border-color: #1C93B6;
+  }
+
+  .btn-success:hover {
+    color: #fff;
+    background-color: #1C93B6;
+    border-color: #1C93B6;
+  }
+
+  .btn-outline-success:hover {
+    background-color: #1C93B6;
+    color: #fff;
+    border-color: #1C93B6;
+  }
+
+  .page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #1C93B6;
+    border-color: #1C93B6;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1); /* Change the icon color to white */
+  }
+</style>
+
+{% endblock content %}
+{% block javascripts %}{% endblock javascripts %}

@@ -1,0 +1,145 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.2/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.2/dist/sweetalert2.all.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+  <style>
+    /* Your existing styles */
+
+    /* Additional styles for responsive menu */
+    @media (max-width: 991px) {
+      .navbar-toggler {
+        color: #fff;
+        border: none;
+        background-color: transparent;
+      }
+
+      .navbar-toggler:focus {
+        outline: none;
+      }
+
+      #sidenav-main.collapsed {
+        width: 60px;
+      }
+
+      #sidenav-main.collapsed .nav-link-text {
+        display: none;
+      }
+
+      #sidenav-main.collapsed .navbar-brand,
+      #sidenav-main.collapsed .navbar-toggler-icon {
+        display: block;
+      }
+    }
+
+    .nav-item {
+      border: none;
+      transition: background-color 0.3s;
+    }
+
+    .nav-item:hover {
+      background-color: #1B87B5; /* Change background color on hover */
+    }
+
+    .nav-item.is_active {
+      background-color: #16749c; /* Change active item color to green */
+      border: none; /* Remove the border from active item */
+    }
+
+    .nav-item:not(.is_active) + .nav-item {
+      border-top: 1px solid #1B87B5; /* Add border to all <li> elements except the first one */
+    }
+    
+  </style>
+
+
+  <script>
+    $(document).ready(function() {
+      // Get all the navigation items (list items)
+      const navItems = $('.nav-item');
+
+      // Add a click event listener to each navigation item
+      navItems.click(function() {
+        // Remove the 'is_active' class from all navigation items
+        navItems.removeClass('is_active');
+        // Add the 'is_active' class to the clicked navigation item
+        $(this).addClass('is_active');
+      });
+    });
+
+    function showLogoutConfirmation() {
+      Swal.fire({
+        text: 'Are you sure you want to logout?',
+        iconHtml: '<div class="icon-shape bg-danger text-gray rounded-circle shadow-none fa-xs"><i class="fas fa-sign-out-alt"></i></div>', // Replace with the appropriate icon HTML
+        showCancelButton: true,
+        showCloseButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        customClass: {
+          icon: 'material-icons-outlined',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Perform logout action
+          window.location.href = '/logout'; // Replace with your logout URL
+        }
+      });
+    }
+  </script>
+
+
+
+</head>
+<body>
+  <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs bg-black" id="sidenav-main" style="background-color: #1c93b6; border:none">
+   
+    <div class="scrollbar-inner">
+      
+      <!-- Brand -->
+      <div class="sidenav-header align-items-center">
+        <a class="navbar-brand" href="/" style="color: #fff">
+          {% comment %} <img src="/static/assets/img/brand/blue.png" class="navbar-brand-img" alt="Logo Design - Jinja Template Logo."> {% endcomment %}
+          {% comment %} <img src="/static/assets/img/brand/book1.png">  </a> {% endcomment %}
+        </a>
+        {% comment %} <h3 style="color: #fff">Atomic Journal</h3> {% endcomment %}
+        {% comment %} <h4 style="color: #fff">mobiloitte@gmail.com</h4> {% endcomment %}
+      </div>
+      <div class="navbar-inner">
+        <!-- Collapse -->
+        <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+          <!-- Nav items -->
+          <ul class="navbar-nav">
+           
+            </li>
+            <li class="nav-item {% if 'user' in request.path %} is_active {% endif %}">
+              <a style="color: #fff" class="nav-link" href="{% url 'Admin:dashboard' %}">
+                <i class="ni ni-planet  text-white"></i>
+                <span class="nav-link-text">User Management</span>
+              </a>
+            </li>
+            
+            <li class="nav-item {% if 'user' in request.path %} is_active {% endif %}">
+              <a style="color: #fff" class="nav-link" href="{% url 'Admin:email-management' %}">
+                <i class="ni ni-planet  text-white"></i>
+                <span class="nav-link-text">Email Management</span>
+              </a>
+            </li>
+            
+            <li class="nav-item {% if 'user' in request.path %} is_active {% endif %}">
+              <a style="color: #fff" class="nav-link" href="{% url 'Admin:logout' %}">
+                <i class="ni ni-planet  text-white"></i>
+                <span class="nav-link-text">Logout</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+</body>
+</html>

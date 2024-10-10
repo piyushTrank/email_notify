@@ -1,0 +1,145 @@
+{% extends 'layouts/base-fullscreen.html' %}
+
+{% block title %} Login {% endblock title %}
+
+{% block stylesheets %}
+<style>
+  .form-group input[type="email"],
+  .form-group input[type="password"] {
+    height: 45px;
+    border: 1px solid #ccc; /* Default border color */
+  }
+  .form-group.error input[type="email"],
+  .form-group.error input[type="password"] {
+    border-color: red; /* Red border color for error */
+  }
+  .error-message {
+    color: red;
+    font-size: 12px;
+    display: block;
+    margin-top: 4px;
+  }
+  .custom-control-label::after {
+    outline: 1px solid black;
+    border-radius: 5px;
+  }
+
+
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="container mt--8 pb-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-5 col-md-7">
+      <div class="card bg-white shadow border-0">
+        <div class="card-header bg-white pb-5">
+          <div class="text-center mt-2 mb-3" style="font-size: 22px;">
+            Admin Login
+          </div>
+        </div>
+        <div class="card-body px-lg-3 py-lg-3">
+          <form id="loginForm" method="POST">
+            {% csrf_token %}
+
+            <div class="form-group mb-3 {% if email_error %}error{% endif %}">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="ni ni-hat-3"></i></span>
+                </div>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email">
+              </div>
+              <div style="margin-left:10%" class="error-message" id="email-error">{{ email_error }}</div>
+            </div>
+            <div class="form-group {% if password_error %}error{% endif %}">
+              <div class="input-group input-group-alternative">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                </div>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password">
+                <span class="input-group-text" id="toggle-password">
+                  <i class="fa fa-eye-slash" id="eye-icon" aria-hidden="true"></i>
+                </span>
+              </div>
+              <div style="margin-left:10%" class="error-message" id="password-error">{{ password_error }}</div>
+            </div>
+            <div class="custom-control custom-control-alternative custom-checkbox dark">
+              <input class="custom-control-input" id="customCheckLogin" type="checkbox" style="outline: 2px black;">
+              <label  class="custom-control-label" for="customCheckLogin" >
+                <span class="dark">Remember me</span>
+              </label><label>
+                
+
+               </span>
+            </label>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-info my-4">Sign in</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", function(event) {
+    var email = document.getElementById("email").value;
+    var password = document.getElementById("password").value;
+    var emailError = document.getElementById("email-error");
+    var passwordError = document.getElementById("password-error");
+
+    emailError.textContent = "";
+    passwordError.textContent = "";
+
+    var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    var hasError = false; // Flag to track if there's any error
+
+    if (!emailPattern.test(email)) {
+      event.preventDefault();
+      emailError.textContent = "Please enter a valid email address.";
+      document.querySelector('#email').classList.add('error');
+      hasError = true;
+    } else {
+      document.querySelector('#email').classList.remove('error');
+    }
+
+    if (password.length < 8) {
+      event.preventDefault();
+      passwordError.textContent = "Password must be at least 8 characters.";
+      document.querySelector('#password').classList.add('error');
+      hasError = true;
+    } else {
+      document.querySelector('#password').classList.remove('error');
+    }
+
+    // Prevent form submission if there's an error
+    if (hasError) {
+      event.preventDefault();
+    }
+  });
+
+  
+    document.getElementById('toggle-password').addEventListener('click', function() {
+      var passwordInput = document.getElementById('password');
+      var eyeIcon = document.getElementById('eye-icon');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+      }
+    });
+  </script>
+
+
+
+{% endblock content %}
+
+{% block javascripts %}
+<!-- Specific JS goes HERE -->
+{% endblock javascripts %}
